@@ -49,21 +49,20 @@ def valider_code(code: str) -> bool:
         and chiffres.isdigit()
     )
 # --- Étape 2 : décider ----------------------------------------------------------------------------
-NOMINAL = 25.0
-TOLERANCE = 0.05
-
 def ecart(mesure: float, nominal: float = NOMINAL) -> float:
+    """Écart à la cote nominale, arrondi à 3 décimales."""
     return round(mesure - nominal, 3)
 
 
 def verdict(mesure: float, nominal: float = NOMINAL, tolerance: float = TOLERANCE) -> str:
+    """Renvoie "conforme", "à reprendre" ou "rebut"."""
     if tolerance <= 0:
         raise ValueError("La tolérance doit être strictement positive.")
-    
+
     e = ecart(mesure, nominal)
     if abs(e) <= tolerance:
         return "conforme"
-    elif e > tolerance:
+    elif e > 0:
         return "à reprendre"
     else:
         return "rebut"
