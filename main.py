@@ -11,7 +11,28 @@ AIDE = """Commandes :
 
 def executer(commande: str, saisies: list[str]) -> bool:
     """Exécute une commande ; renvoie False quand il faut quitter."""
-    raise NotImplementedError("à compléter")
+    match commande.split():
+        case ["mesure", code, valeur]:
+            try:
+                code_ok, mesure, v = analyser_ligne(f"{code};{valeur}")
+            except ValueError as err:
+                print(f"Refusé : {err}")
+            else:
+                saisies.append(code_ok)
+                print(f"{code_ok} : {mesure:.3f} mm -> {v}")
+            return True
+        case ["lot"]:
+            print(rapport(LOT_A))
+            return True
+        case ["aide"]:
+            print(AIDE)
+            return True
+        case ["quitter"]:
+            print(f"{len(saisies)} pièce(s) contrôlée(s) à la main. Au revoir.")
+            return False
+        case _:
+            print(f"Commande inconnue : {commande!r} (tapez aide)")
+            return True
 
 
 def main() -> None:
