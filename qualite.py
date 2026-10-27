@@ -118,12 +118,20 @@ def compter_verdicts(resultats: list[tuple[str, float, str]]) -> tuple[int, int,
 # --- Étape 5 : statistiques et capabilité ---------------------------------------------------------
 def moyenne(*valeurs: float) -> float:
     """Moyenne d'un nombre quelconque de valeurs. Lève ValueError s'il n'y en a aucune."""
-    raise NotImplementedError("à compléter")
+    if len(valeurs) == 0:
+        raise ValueError("moyenne : aucune valeur")
+    return sum(valeurs) / len(valeurs)
 
 
 def ecart_type(*valeurs: float) -> float:
     """Écart type d'échantillon (division par n - 1). Lève ValueError avec moins de deux valeurs."""
-    raise NotImplementedError("à compléter")
+    if len(valeurs) < 2:
+        raise ValueError("ecart_type : au moins deux valeurs sont nécessaires")
+    m = moyenne(*valeurs)
+    somme = 0.0
+    for x in valeurs:
+        somme += (x - m) ** 2
+    return math.sqrt(somme / (len(valeurs) - 1))
 
 
 def capabilite(mesures: list[float], *, nominal: float = NOMINAL, tolerance: float = TOLERANCE) -> tuple[float, float]:
@@ -132,9 +140,15 @@ def capabilite(mesures: list[float], *, nominal: float = NOMINAL, tolerance: flo
     Cp  = largeur de la tolérance / (6 sigma)                  : le procédé est-il assez précis ?
     Cpk = distance de la moyenne à la limite la plus proche / (3 sigma) : est-il bien centré ?
     """
-    raise NotImplementedError("à compléter")
-
-
+    s = ecart_type(*mesures)
+    if s == 0:
+        raise ValueError("capabilite : écart type nul")
+    m = moyenne(*mesures)
+    t_min = nominal - tolerance
+    t_max = nominal + tolerance
+    cp = (t_max - t_min) / (6 * s)
+    cpk = min(t_max - m, m - t_min) / (3 * s)
+    return (round(cp, 2), round(cpk, 2))
 # --- Étape 6 : le rapport -------------------------------------------------------------------------
 def rapport(lignes: list[str], *, nominal: float = NOMINAL, tolerance: float = TOLERANCE) -> str:
     """Construit le rapport de contrôle d'un lot, sous forme d'une seule chaîne (une ligne par pièce)."""
