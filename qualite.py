@@ -10,17 +10,12 @@ import math
 
 # --- Étape 1 : nettoyage et validation des entrées ------------------------------------------------
 def lire_mesure(texte: str) -> float:
-    """Nettoie et convertit une mesure brute en float.
-
-    Enlève les espaces, passe en minuscules, retire le suffixe 'mm',
+    """Enlève les espaces, passe en minuscules, retire le suffixe 'mm',
     remplace la virgule par un point, puis convertit en float.
     Lève ValueError pour toute valeur invalide, nulle/négative, nan ou inf.
     """
     texte_nettoye = texte.strip().lower()
-    
-    if texte_nettoye.endswith("mm"):
-        texte_nettoye = texte_nettoye.removesuffix("mm").strip()
-
+    texte_nettoye = texte_nettoye.removesuffix("mm").strip()
     texte_nettoye = texte_nettoye.replace(",", ".")
 
     try:
@@ -28,7 +23,6 @@ def lire_mesure(texte: str) -> float:
     except ValueError:
         raise ValueError(f"mesure invalide : {texte.strip()!r}")
 
-    # Vérification : pas de nan/inf et valeur strictement positive (> 0)
     if not math.isfinite(valeur) or valeur <= 0:
         raise ValueError(f"mesure invalide : {texte.strip()!r}")
 
@@ -50,7 +44,7 @@ def valider_code(code: str) -> bool:
     return (
         prefixe.isalpha()
         and prefixe.isupper()
-        and prefixe.isascii()  # Protection contre ÉTÉ-0001
+        and prefixe.isascii()
         and separateur == "-"
         and chiffres.isdigit()
     )
