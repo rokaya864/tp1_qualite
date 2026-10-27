@@ -85,18 +85,18 @@ def analyser_ligne(ligne: str, *, nominal: float = NOMINAL, tolerance: float = T
 def analyser_lot(lignes: list[str], **reglages) -> tuple[list[tuple[str, float, str]], list[str]]:
     resultats = []
     erreurs = []
-    
+
     for numero, ligne in enumerate(lignes, start=1):
         ligne_epuree = ligne.strip()
         if not ligne_epuree or ligne_epuree.startswith("#"):
             continue
-            
+
         try:
             res = analyser_ligne(ligne, **reglages)
             resultats.append(res)
         except ValueError as err:
-            erreurs.append(f"ligne {numero} {err}")
-            
+            erreurs.append(f"ligne {numero} : {err}")
+
     return resultats, erreurs
 
 
@@ -104,7 +104,7 @@ def compter_verdicts(resultats: list[tuple[str, float, str]]) -> tuple[int, int,
     conformes = 0
     a_reprendre = 0
     rebuts = 0
-    
+
     for _, _, v in resultats:
         if v == "conforme":
             conformes += 1
@@ -112,7 +112,7 @@ def compter_verdicts(resultats: list[tuple[str, float, str]]) -> tuple[int, int,
             a_reprendre += 1
         elif v == "rebut":
             rebuts += 1
-            
+
     return conformes, a_reprendre, rebuts
 
 # --- Étape 5 : statistiques et capabilité ---------------------------------------------------------
