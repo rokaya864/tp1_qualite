@@ -72,14 +72,14 @@ def analyser_ligne(ligne: str, *, nominal: float = NOMINAL, tolerance: float = T
     champs = ligne.split(";")
     if len(champs) != 2:
         raise ValueError(f"2 champs attendus, {len(champs)} trouvé(s)")
-    
+
     code = champs[0].strip().upper()
     if not valider_code(code):
-        raise ValueError(f"code invalide: {code!r}")
-        
+        raise ValueError(f"code invalide : {code!r}")
+
     mesure = lire_mesure(champs[1])
     v = verdict(mesure, nominal=nominal, tolerance=tolerance)
-    
+
     return (code, mesure, v)
 # --- Étape 4 : analyser un lot --------------------------------------------------------------------
 def analyser_lot(lignes: list[str], **reglages) -> tuple[list[tuple[str, float, str]], list[str]]:
